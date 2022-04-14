@@ -1,3 +1,8 @@
+#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+
+#include <QMainWindow>
+#include <QGraphicsScene>
 #include <QIcon>
 #include "juego.h"
 #include "jugador_1.h"
@@ -8,6 +13,8 @@
 #include <QMessageBox>
 #include <QFile>
 #include <time.h>
+#include <QKeyEvent>
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -38,7 +45,7 @@ void on_aceptar_clicked();
 
 private:
 
-   Ui::MainWindow *ui;
+Ui::MainWindow *ui;
 juego *GAME ;   //Puntero al Juego principal
 QMediaPlayer *music , *msc_2 ;  //Punteros que almacenaran la musica del menu y cuando se esté jugando
 QSoundEffect *efecto_boton_click ;      //Puntero para loe efectos de sonido de click del menu
