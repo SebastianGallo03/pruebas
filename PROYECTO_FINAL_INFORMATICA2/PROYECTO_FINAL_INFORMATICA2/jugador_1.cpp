@@ -1,4 +1,9 @@
 #include "jugador_1.h"
+#include "enemigos.h"
+#include "puntaje.h"
+extern puntaje *health ;
+
+
 Jugador_1::Jugador_1( int n ){
 
     //n == 0 ->Personaje 1 ; n== 1 -> personaje 2
@@ -14,7 +19,7 @@ Jugador_1::Jugador_1( int n ){
 
         }
 
-        num_plane = n ;     //Asiganamos el valor del sprite del personaje
+        num_av = n ;     //Asiganamos el valor del sprite del personaje
 
         animacion = new QTimer() ;
 
@@ -27,20 +32,23 @@ Jugador_1::Jugador_1( int n ){
         connect( caida_libre , SIGNAL( timeout() ) , this , SLOT( caida_libre_av() ) ) ;
 
         caida_libre->start( T ) ;
+        perder_vida = new QSoundEffect ;
+
+        perder_vida->setSource( QUrl("qrc:/Recursos/Lose.wav") ) ;
 
     }
 
     void Jugador_1::set_imagen_jugador( int n ){switch( n ){            //Alistamos las imagenes del personaje para ser mostradas en pantalla
 
         case 1:
-        {   tam_x_plane = 80 ;
+        {   tam_x_av = 80 ;
             sprite_actual = sprite_jugador.copy( 80*frame , 0 , 80 , 48 ) ;
             setPixmap( sprite_actual.scaled( 80 , 48 ) ) ;
         }
             break;
 
         case 2:
-        {   tam_x_plane = 64 ;
+        {   tam_x_av = 64 ;
             sprite_actual = sprite_jugador.copy( 64*frame , 0 , 64 , 48 ) ;
 
             setPixmap( sprite_actual.scaled( 64 , 48 ) ) ;
@@ -59,11 +67,44 @@ Jugador_1::Jugador_1( int n ){
 
         }
 
-        set_imagen_jugador( num_plane ) ;
+        set_imagen_jugador( num_av ) ;
 
     }
 
     void Jugador_1::caida_libre_av(){
+        //Se revisan las colisones
+
+            colisiones = collidingItems() ;
+
+            for( int i = 0 , nl = colisiones.size() ; i < nl ; i++ ){
+
+
+                if( (typeid( *( colisiones[i] )  ) ==  typeid( enemigos )) && choque ){
+
+
+                    choque = false ;
+
+                    GAME_OVER = health->salud( 0 ) ;
+
+                    perder_vida->play() ;
+
+                    if( GAME_OVER ){
+
+                        caida_libre->stop() ;
+
+                        animacion->stop() ;
+                    }
+                    else{
+
+                        QTimer::singleShot( 2500 , this, SLOT( tiempo_inmunidad() ) );
+                    }
+
+                }
+
+
+            }
+
+                //Movimiento caida libre
 
         float x , y ;
 
@@ -93,7 +134,8 @@ Jugador_1::Jugador_1( int n ){
             animacion->stop() ;
 
             GAME_OVER = true ;
-
+            vidas = 0 ;
+            health->salud( 1 );
 
         }
 
@@ -107,7 +149,7 @@ Jugador_1::Jugador_1( int n ){
 
         bool cond1 = pos_0y - 5 > 0 ;
 
-        bool cond2 = (pos_0x + tam_x_plane ) + 5 < 800 ;
+        bool cond2 = (pos_0x + tam_x_av ) + 5 < 800 ;
 
         if( cond1 && cond2 ){       //Condiciones para los boredes derecho y superior de la pantalla
 
@@ -144,4 +186,7 @@ Jugador_1::Jugador_1( int n ){
         }
 
 
+    }
+    void Jugador_1::tiempo_inmunidad(){
+    choque = true ;
     }

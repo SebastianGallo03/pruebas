@@ -32,9 +32,9 @@ void juego::escena_Menu(){
 
            //juagdor
 
-       Main_player = new Jugador_1( select_plane ) ;
+       Main_player = new Jugador_1( select_av ) ;
 
-       Main_player->set_imagen_jugador( select_plane ) ;
+       Main_player->set_imagen_jugador( select_av ) ;
        Main_player->setX( 130 ) ;      //130
 
        Main_player->setY( 240 ) ;
