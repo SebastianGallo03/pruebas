@@ -90,6 +90,24 @@ ui->load_partida_txt->hide() ;
      ui->completado->setGeometry( 135 , 100 , 500 , 150 ) ;
 
      ui->completado->hide() ;
+     //texto rush [Multijugador]
+
+     ui->rush_multip->setGeometry( 200 , 280 , 400 , 130 ) ;
+
+     ui->rush_multip->hide() ;
+
+
+            //texto Ganadores del Multi Jugador
+
+     ui->ganador_p1_txt->setGeometry( 140 , 100 , 500 , 150 ) ;
+
+     ui->ganador_p1_txt->hide() ;
+
+
+     ui->ganador_p2_txt->setGeometry( 140 , 100 , 500 , 150 ) ;
+
+     ui->ganador_p2_txt->hide() ;
+
 
 
 
@@ -290,14 +308,26 @@ void MainWindow::Guardar_nuevo_jugador(){
                MainWindow::~MainWindow()       //Se eliminan lo punteros de la memoria al cerrar el programa
                {
                    delete ui;
+
                    delete  GAME ;
-                       delete  music ;
 
-                       delete efecto_boton_click ;
+                   delete  music ;
 
-                       delete  msc_2 ;
+                   delete efecto_boton_click ;
 
-                       delete msg_box ;
+                   delete  msc_2 ;
+
+                   delete msg_box ;
+
+                   delete ending_theme ;
+
+                   delete lvl_cambio ;
+
+                   delete end_game ;
+
+                   delete timer_spawn_enemy ;
+
+                   delete ENEmigos ;
 
                    }
 
@@ -343,6 +373,7 @@ void MainWindow::Guardar_nuevo_jugador(){
 
                    ui->instrucciones->show() ;
 
+                   ui->rush_multip->hide() ;
 
 
                }
@@ -387,7 +418,7 @@ void MainWindow::Guardar_nuevo_jugador(){
                    ui->cargar_partida->hide() ;
                    GAME->val_btn_presionado = 1 ;      //Se le asigana 1 a la variable
                    ui->instrucciones->hide() ;
-
+                   ui->rush_multip->show() ;
                   }
                void MainWindow::on_nueva_partida_clicked(){        //Al presionar el boton de nueva partida
 
@@ -416,6 +447,9 @@ void MainWindow::Guardar_nuevo_jugador(){
 
                           }break;
                           case 1:{        //multijugador
+
+                             ui->rush_multip->hide() ;
+
                              set_interfaz_1() ;
 
                              delete  GAME->menu ;
@@ -871,6 +905,10 @@ void MainWindow::Guardar_nuevo_jugador(){
 
                    timer_spawn_enemy->start( GAME->tiempo_enemigos ) ;
 
+                   cambio_p_effect = new QSoundEffect ;
+
+                   cambio_p_effect->setSource( QUrl("qrc:/Recursos/lushlife-levelup.wav") ) ;
+
                    Score = new puntaje() ;
 
                    player_name = new puntaje() ;
@@ -896,6 +934,7 @@ void MainWindow::Guardar_nuevo_jugador(){
 
                void MainWindow::change_player_multiP(){
 
+                   cambio_p_effect->play() ;
 
                    GAME->flag_multip = false ;
 
@@ -1002,14 +1041,15 @@ void MainWindow::Guardar_nuevo_jugador(){
                        timer_spawn_enemy->stop() ;
 
                        GAME->puntos_2player = puntos ;
+                       //comparar puntos
 
                        if( GAME->puntos_1player > GAME->puntos_2player ){
 
-                           qDebug() << "GANA EL PLAYER 1 -->" << GAME->puntos_1player ;
+                          ui->ganador_p1_txt->show() ;
                        }
                        else{
 
-                            qDebug() << "GANA EL PLAYER 2 -->" << GAME->puntos_2player ;
+                            ui->ganador_p2_txt->show() ;
                        }
 
                    }
